@@ -2,10 +2,6 @@ const BASE_URL = "https://images-api.nasa.gov/search";
 const gallery = document.getElementById("gallery");
 const statusContainer = document.getElementById("statusContainer");
 
-const todayStr = new Date().toISOString().split("T")[0];
-document.getElementById("start").max = todayStr;
-document.getElementById("end").max = todayStr;
-
 async function apiCall(query) {
     showLoading(true);
     try {
@@ -15,6 +11,7 @@ async function apiCall(query) {
         }
         
         const json = await response.json();
+        // Tomamos los primeros 24 resultados para llenar bien la cuadrícula
         const items = json.collection.items.slice(0, 24); 
 
         return items.map(item => ({
@@ -36,12 +33,12 @@ function showToast(msg) {
     const t = document.getElementById("toast");
     t.innerText = msg;
     t.classList.add("show");
-    setTimeout(() => t.classList.remove("show"), 4000);
+    setTimeout(() => t.classList.remove("show"), 3000);
 }
 
 function showLoading(isLoading) {
     if (isLoading) {
-        statusContainer.innerHTML = '<div class="loader">📡 Conectando con los servidores de la NASA...</div>';
+        statusContainer.innerHTML = '<div class="loader">📡 Buscando en los archivos de la NASA...</div>';
     } else {
         statusContainer.innerHTML = '';
     }
@@ -50,7 +47,7 @@ function showLoading(isLoading) {
 function renderGallery(items) {
     gallery.innerHTML = "";
     if (items.length === 0) {
-        gallery.innerHTML = "<p style='text-align:center; grid-column: 1/-1; color:#ef4444; font-weight:bold;'>No se encontraron resultados.</p>";
+        gallery.innerHTML = "<p style='text-align:center; grid-column: 1/-1; color:#ef4444; font-size:1.2rem;'>No se encontraron imágenes para esta búsqueda.</p>";
         return;
     }
     items.forEach(createCard);
@@ -79,8 +76,10 @@ function openModal(data) {
         <h2 style="margin:10px 0">${data.title}</h2>
         <img src="${data.hdurl || data.url}">
         <p style="line-height:1.6; color:#cbd5e1; margin-bottom:20px">${data.explanation}</p>
+        
         <div style="display:flex; gap:10px">
-            <button class="btn" style="background:${isFavorite ? '#ef4444' : '#22c55e'}; color:white" onclick='toggleFavorite(${JSON.stringify(data).replace(/'/g, "&apos;")})'>
+            <button class="btn" style="background:${isFavorite ? '#ef4444' : '#22c55e'}; color:white" 
+                onclick='toggleFavorite(${JSON.stringify(data).replace(/'/g, "&apos;")})'>
                 ${isFavorite ? '🗑️ Eliminar de Favoritos' : '❤️ Guardar en Favoritos'}
             </button>
             <a href="${data.hdurl || data.url}" target="_blank" class="btn" style="background:#334155; color:white; text-decoration:none">
@@ -96,7 +95,7 @@ function closeModal() {
 }
 
 function getFavorites() {
-    return JSON.parse(localStorage.getItem("nasa_favs_clean")) || [];
+    return JSON.parse(localStorage.getItem("nasa_favs_final")) || [];
 }
 
 function checkIfFavorite(date) {
@@ -106,7 +105,7 @@ function checkIfFavorite(date) {
 function toggleFavorite(data) {
     let favs = getFavorites();
     const index = favs.findIndex(f => f.date === data.date);
-    
+
     if (index === -1) {
         favs.push(data);
         showToast("Guardado en favoritos 🚀");
@@ -114,8 +113,8 @@ function toggleFavorite(data) {
         favs.splice(index, 1);
         showToast("Eliminado de favoritos");
     }
-    
-    localStorage.setItem("nasa_favs_clean", JSON.stringify(favs));
+
+    localStorage.setItem("nasa_favs_final", JSON.stringify(favs));
     closeModal();
     
     if (gallery.dataset.view === "favorites") {
@@ -130,32 +129,34 @@ function showFavorites() {
 
 async function loadToday() {
     gallery.dataset.view = "all";
-    const data = await apiCall("q=telescope");
+    document.getElementById("searchInput").value = "";
+    const data = await apiCall("q=nebula");
     renderGallery(data);
 }
 
-async function loadRange() {
-    const start = document.getElementById("start").value;
-    const end = document.getElementById("end").value;
-    
-    if (!start || !end) {
-        return showToast("Selecciona un rango de fechas");
+async function loadSearch() {
+    const query = document.getElementById("searchInput").value;
+    if (!query) {
+        return showToast("Escribe algo para buscar");
     }
     
     gallery.dataset.view = "all";
-    const startYear = start.split("-")[0];
-    const endYear = end.split("-")[0];
-    const data = await apiCall(`q=space&year_start=${startYear}&year_end=${endYear}`);
+    const data = await apiCall(`q=${query}`);
     renderGallery(data);
 }
 
 async function loadRandom() {
     gallery.dataset.view = "all";
-    const keywords = ["mars", "galaxy", "nebula", "astronaut", "apollo", "earth", "moon"];
+    document.getElementById("searchInput").value = "";
+    
+    // Lista de temas espaciales increíbles
+    const keywords = ["mars rover", "supernova", "andromeda", "astronaut", "apollo 11", "saturn rings", "black hole"];
     const randomKey = keywords[Math.floor(Math.random() * keywords.length)];
+    
     const data = await apiCall(`q=${randomKey}`);
     renderGallery(data);
-    showToast(`🎲 Mostrando: ${randomKey}`);
+    showToast(`🎲 Explorando: ${randomKey}`);
 }
 
+// Carga inicial
 loadToday();

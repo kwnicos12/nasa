@@ -39,6 +39,7 @@ nav h1 {
     font-weight: 800;
     background: linear-gradient(90deg, var(--primary), #fff);
     -webkit-background-clip: text;
+    background-clip: text; /* Corrección del warning de VSCode */
     -webkit-text-fill-color: transparent;
 }
 
@@ -62,6 +63,12 @@ nav h1 {
 .btn-primary:hover {
     background: #fff;
     transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: var(--glass);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .hero {
@@ -89,13 +96,14 @@ nav h1 {
     padding: 0 20px;
 }
 
-input[type="date"] {
+input[type="text"] {
     background: var(--glass);
     border: 1px solid var(--glass);
     color: white;
-    padding: 10px;
+    padding: 10px 15px;
     border-radius: 8px;
     outline: none;
+    width: 250px;
 }
 
 .gallery {
@@ -111,7 +119,7 @@ input[type="date"] {
     border-radius: 20px;
     border: 1px solid var(--glass);
     overflow: hidden;
-    transition: 0.4s;
+    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     cursor: pointer;
     display: flex;
     flex-direction: column;
@@ -159,7 +167,7 @@ input[type="date"] {
 .modal {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.9);
+    background: rgba(0, 0, 0, 0.9);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -171,8 +179,8 @@ input[type="date"] {
 }
 
 .modal.active {
-        opacity: 1;
-        pointer-events: all;
+    opacity: 1;
+    pointer-events: all;
 }
 
 .modal-content {
@@ -200,7 +208,7 @@ input[type="date"] {
     position: absolute;
     top: 20px;
     right: 20px;
-    background: rgba(255,255,255,0.1);
+    background: rgba(255, 255, 255, 0.1);
     border: none;
     color: white;
     width: 40px;
@@ -221,7 +229,7 @@ input[type="date"] {
     padding: 12px 30px;
     border-radius: 50px;
     font-weight: bold;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
     opacity: 0;
     transition: 0.4s;
     z-index: 2000;
@@ -240,21 +248,11 @@ input[type="date"] {
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 @keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
 }
