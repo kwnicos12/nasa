@@ -1,54 +1,42 @@
-
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NASA Explorer | 2026 Edition</title>
+    <title>NASA Space Explorer</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <nav>
-    <h1>NASA Explorer</h1>
-    <div class="nav-actions">
-    <button class="btn btn-secondary" onclick="showFavorites()">⭐ Mis Favoritos</button>
-    </div>
+  <h1>NASA Explorer</h1>
+  <button class="btn btn-secondary" onclick="showFavorites()">⭐ Favoritos</button>
 </nav>
 
 <section class="hero">
-    <h2>Descubre el Cosmos</h2>
-    <p>Explora la Imagen Astronómica del Día y archivos históricos de la NASA</p>
+  <h2>Descubre el Cosmos</h2>
+  <p>Explora la galería oficial de imágenes de la NASA</p>
 </section>
 
 <div class="controls">
-    <div class="search-box">
-    <input type="date" id="start">
-    <input type="date" id="end">
-    <button class="btn btn-primary" onclick="loadRange()">🔍 Explorar Rango</button>
-    </div>
-    <div class="quick-actions">
-    <button class="btn btn-dark" onclick="loadToday()">📅 Hoy</button>
-    <button class="btn btn-accent" onclick="loadRandom()">🎲 Sorpréndeme</button>
-    </div>
+  <input type="date" id="start">
+  <input type="date" id="end">
+  <button class="btn btn-primary" onclick="loadRange()">🔍 Buscar por Año</button>
+  <button class="btn btn-primary" style="background:#334155; color:white;" onclick="loadToday()">🔭 Destacadas</button>
+  <button class="btn btn-primary" style="background:#ea580c; color:white;" onclick="loadRandom()">🎲 Galería Aleatoria</button>
 </div>
 
 <div id="statusContainer"></div>
-<main class="gallery" id="gallery"></main>
+<div class="gallery" id="gallery"></div>
 
 <div class="modal" id="modal">
-    <div class="modal-content">
+  <div class="modal-content">
     <button class="close-btn" onclick="closeModal()">✕</button>
     <div id="modalBody" class="modal-body"></div>
-    </div>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
-
-<footer>
-    <p>Hecho a mano por Carolina Calderon &copy; 2026</p>
-</footer>
 
 <script src="app.js"></script>
 </body>
